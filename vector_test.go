@@ -1,16 +1,15 @@
 package word2vec
 
 import (
-	"github.com/shirayu/go-word2vec"
 	"testing"
 )
 
 func TestVector(t *testing.T) {
-	vector1 := word2vec.Vector{2.0, 4.0, 16.0}
-	vector2 := word2vec.Vector{1.0, 1.0, 1.0}
-	vector3 := word2vec.Vector{2.0, 2.0, 2.0}
-	vector4 := word2vec.Vector{5.0, 5.0, 5.0}
-	vector5 := word2vec.Vector{7.0, 7.0, 7.0}
+	vector1 := Vector{2.0, 4.0, 16.0}
+	vector2 := Vector{1.0, 1.0, 1.0}
+	vector3 := Vector{2.0, 2.0, 2.0}
+	vector4 := Vector{5.0, 5.0, 5.0}
+	vector5 := Vector{7.0, 7.0, 7.0}
 	const dot45 = float32(105.0)
 	const norm1 = 16.613247
 

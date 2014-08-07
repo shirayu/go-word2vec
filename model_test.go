@@ -1,7 +1,6 @@
 package word2vec
 
 import (
-	"github.com/shirayu/go-word2vec"
 	"os"
 	"testing"
 )
@@ -14,7 +13,7 @@ func TestModelLoad(t *testing.T) {
 		t.Errorf("%q\n", err)
 	}
 
-	model, err := word2vec.NewModel(inf)
+	model, err := NewModel(inf)
 	if model == nil {
 		t.Errorf("Model was not loaded\t%q\n", err)
 		return
