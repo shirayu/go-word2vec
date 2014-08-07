@@ -2,6 +2,7 @@
 # go-word2vec
 
 [![Build Status](https://travis-ci.org/shirayu/go-word2vec.svg?branch=master)](https://travis-ci.org/shirayu/go-word2vec)
+[![Coverage Status](https://coveralls.io/repos/shirayu/go-word2vec/badge.png)](https://coveralls.io/r/shirayu/go-word2vec)
 
 ## What's this
 
