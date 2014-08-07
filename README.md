@@ -1,6 +1,8 @@
 
 # go-word2vec
 
+[![Build Status](https://travis-ci.org/shirayu/go-word2vec.svg?branch=master)](https://travis-ci.org/shirayu/go-word2vec)
+
 ## What's this
 
 - A go library of [word2vec](https://code.google.com/p/word2vec/).
