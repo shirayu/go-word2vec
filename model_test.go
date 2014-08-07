@@ -6,6 +6,18 @@ import (
 )
 
 func TestModelLoad(t *testing.T) {
+
+	ifname0 := "test/broken.model.bin"
+	inf0, err := os.Open(ifname0)
+	defer inf0.Close()
+	if err != nil {
+		t.Errorf("%q\n", err)
+	}
+	_, err = NewModel(inf0)
+	if err == nil {
+		t.Errorf("Broken model should make errors")
+	}
+
 	ifname := "test/model.bin"
 	inf, err := os.Open(ifname)
 	defer inf.Close()
@@ -42,6 +54,10 @@ func TestModelLoad(t *testing.T) {
 	if sim2 != 0 || err == nil {
 		t.Errorf("Error: Similarity() for not found word")
 	}
+	sim3, err := model.Similarity("NOT_FOUND_WORD", "he")
+	if sim3 != 0 || err == nil {
+		t.Errorf("Error: Similarity() for not found word")
+	}
 
 	if n1 := wv1.GetNorm(); n1 != 1 {
 		t.Errorf("Error:\tNorm1 is not 1\t%f\n", n1)
@@ -66,6 +82,13 @@ func TestModelLoad(t *testing.T) {
 	}
 	if norm4 != 0.5698909 {
 		t.Errorf("Error:\tInorrect norm of GetVector(\"it\")")
+	}
+	wv, norm := model.GetVector("NOT_FOUND_WORD")
+	if wv != nil {
+		t.Errorf("Error:\tVector shoud be nil for non-existing word")
+	}
+	if norm != 0 {
+		t.Errorf("Error:\tThe norm shoud be 0 for non-existing word")
 	}
 
 }

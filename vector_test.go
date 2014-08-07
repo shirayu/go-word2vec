@@ -5,6 +5,7 @@ import (
 )
 
 func TestVector(t *testing.T) {
+	vector0 := Vector{2.0}
 	vector1 := Vector{2.0, 4.0, 16.0}
 	vector2 := Vector{1.0, 1.0, 1.0}
 	vector3 := Vector{2.0, 2.0, 2.0}
@@ -31,6 +32,13 @@ func TestVector(t *testing.T) {
 	vector2.Scal(2)
 	if !vector2.Equals(vector3) {
 		t.Errorf("Error of Scal()\twant:%q\tbut: %q", vector3, vector2)
+	}
+
+	if vector2.Equals(vector0) {
+		t.Errorf("Equals()\tTwo vector length is different. %d vs %d", len(vector0), len(vector2))
+	}
+	if vector3.Equals(vector4) {
+		t.Errorf("Equals()\tTwo vector  is not equal. %q vs %q", vector3, vector4)
 	}
 
 	vector3.Add(1, vector4)
