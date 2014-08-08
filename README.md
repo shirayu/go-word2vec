@@ -14,19 +14,23 @@
 go get github.com/shirayu/go-word2vec
 ```
 
-## Acknoledgement
-I wrote this library by refering to the following implementations.
+## Acknowledgement
+I wrote this library by referring to the following implementations.
 
 - https://github.com/thinxer/go-word2vec
 - https://github.com/sshillo/word2vec
 - https://github.com/marekrei/convertvec
 
-I developed this program as a part of research in [Kyoto University](http://www.kyoto-u.ac.jp/en).
+I developed this program as a part of the research project 
+["Establishment of Knowledge-Intensive Structural Natural Language Processing and Construction of Knowledge Infrastructure"](http://nlp.ist.i.kyoto-u.ac.jp/CREST/?en)
+in [Kyoto University](http://www.kyoto-u.ac.jp/en)
+supported by [CREST, JST](http://www.jst.go.jp/kisoken/crest/en/).
+
 
 ## Licence
 
 - (c) Yuta Hayashibe 2014
-- Released under any of the following liceneces
+- Released under any of the following licences
     - Lesser GNU General Public License 3.0 (see the file LGPL)
     - New BSD License (3-clause BSD License) (see the file BSD)
 
