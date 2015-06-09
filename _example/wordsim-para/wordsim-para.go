@@ -57,7 +57,7 @@ func getSims(wordlist []string, model *word2vec.Model, start int, end int, th fl
 			}
 			simval, _ := model.Similarity(x, word)
 			if simval >= th {
-				fmt.Printf("%s\t%s\t%f\n", x, word, simval)
+				fmt.Printf("%s %s\t%f\n", x, word, simval)
 			}
 		}
 	}
