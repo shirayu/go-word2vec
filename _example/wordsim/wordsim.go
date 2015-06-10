@@ -74,6 +74,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%q\n", err)
 		os.Exit(1)
 	}
+	fmt.Fprintf(os.Stderr, "Vocabsize: %d\n", model.GetVocabSize())
+	fmt.Fprintf(os.Stderr, "Vectorsize: %d\n", model.GetVectorSize())
 
 	reader := bufio.NewReader(inf)
 	line, _, err := reader.ReadLine()

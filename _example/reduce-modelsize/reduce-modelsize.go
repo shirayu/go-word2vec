@@ -101,6 +101,7 @@ func main() {
 			tmpout.WriteString(myword)
 			tmpout.WriteString(" ")
 			binary.Write(tmpout, binary.LittleEndian, tmp)
+			tmpout.WriteString("\n")
 		}
 	}
 	log.Printf("done: %d", vocabSize)
