@@ -32,6 +32,9 @@ func TestModelLoad(t *testing.T) {
 	}
 	t.Logf("Model\tvocab=%d\tvector=%d\n", model.GetVocabSize(), model.GetVectorSize())
 
+	if model.GetVocabSize() != len(model.GetNorms()) {
+		t.Errorf("Vocab norms error")
+	}
 	if model.GetVocabSize() != len(model.GetVocab()) {
 		t.Errorf("Vocab size error")
 	}

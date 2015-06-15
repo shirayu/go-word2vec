@@ -76,6 +76,10 @@ func (self *Model) GetNormalizedVector(word string) Vector {
 	return nil
 }
 
+func (self *Model) GetNorms() Vector {
+	return self.norms
+}
+
 //Get original norm
 func (self *Model) GetNorm(word string) float32 {
 	position, ok := self.vocab[word]

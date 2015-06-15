@@ -46,27 +46,18 @@ func getW2VModel(ifname string) (model *word2vec.Model, err error) {
 	return word2vec.NewModel(w2f)
 }
 
-func outSims(model *word2vec.Model, x string, outf *os.File, top_n int) {
-	connected_vector := model.GetConnectedVector()
-	vocab := model.GetVocab()
-	vectorSize := model.GetVectorSize()
-	vec1, _ := model.GetVector(x)
-	if vec1 == nil {
-		fmt.Fprintf(outf, "%s is out of vocablary\n", x)
-		return
-	}
-
+func outSims(model *word2vec.Model, vec1 word2vec.Vector, outf *os.File, top_n int) {
 	best_words := make([]string, top_n)
 	best_vals := make([]float32, top_n)
+	vocab := model.GetVocab()
+	connected_vector := model.GetConnectedVector()
+	vectorSize := model.GetVectorSize()
 
 	for i, _ := range best_vals {
 		best_vals[i] = -1
 	}
 
 	for word, position := range vocab {
-		if word == x {
-			continue
-		}
 		vec2 := connected_vector[position*vectorSize : (position+1)*vectorSize]
 		val := vec1.Dot(vec2)
 		for idx := top_n - 1; idx >= 0; idx-- {
@@ -90,16 +81,20 @@ func outSims(model *word2vec.Model, x string, outf *os.File, top_n int) {
 	fmt.Fprintf(outf, "\n")
 }
 
-func outSim(model *word2vec.Model, x, y string, outf *os.File) {
-	simval, err := model.Similarity(x, y)
+func getConnectedVector(model *word2vec.Model, line string) (word2vec.Vector, error) {
+	vectorSize := model.GetVectorSize()
 
-	fmt.Fprintf(outf, "%s\t%s", x, y)
-	if err == nil {
-		fmt.Fprintf(outf, "\t%f", simval)
-	} else {
-		fmt.Fprintf(outf, "\t-")
+	vec1 := make(word2vec.Vector, vectorSize)
+	words := strings.Split(line, "|")
+	for _, w := range words {
+		vec, norm := model.GetVector(w)
+		if vec == nil {
+			return nil, errors.New("out of vocablary")
+		}
+		vec1.Add(norm, vec)
 	}
-	fmt.Fprintf(outf, "\n")
+	vec1.Normalize()
+	return vec1, nil
 }
 
 func main() {
@@ -149,12 +144,28 @@ func main() {
 		if len(items) < 2 { // non target line
 			if len(line) != 0 {
 				x := string(line)
-				outSims(model, x, outf, top_n)
+				vec1, err := getConnectedVector(model, x)
+				if err == nil {
+					outSims(model, vec1, outf, top_n)
+				} else {
+					fmt.Fprintf(os.Stderr, "%q\n", err)
+				}
 			}
 		} else {
 			x := items[0]
 			y := items[1]
-			outSim(model, x, y, outf)
+			vec1, err := getConnectedVector(model, x)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%s: %q\n", x, err)
+				continue
+			}
+			vec2, err := getConnectedVector(model, y)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%s: %q\n", y, err)
+				continue
+			}
+			simval := vec1.Dot(vec2)
+			fmt.Fprintf(outf, "%s\t%s\t%f\n", x, y, simval)
 		}
 	}
 
