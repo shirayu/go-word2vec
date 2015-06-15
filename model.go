@@ -44,8 +44,14 @@ func NewModel(inf *os.File) (model *Model, err error) {
 
 	return model, nil
 }
+func (self *Model) GetVocab() map[string]int {
+	return self.vocab
+}
 func (self *Model) GetVocabSize() int {
 	return self.vocabSize
+}
+func (self *Model) GetConnectedVector() Vector {
+	return self.data
 }
 func (self *Model) GetVectorSize() int {
 	return self.vectorSize

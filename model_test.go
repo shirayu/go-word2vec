@@ -31,6 +31,14 @@ func TestModelLoad(t *testing.T) {
 		return
 	}
 	t.Logf("Model\tvocab=%d\tvector=%d\n", model.GetVocabSize(), model.GetVectorSize())
+
+	if model.GetVocabSize() != len(model.GetVocab()) {
+		t.Errorf("Vocab size error")
+	}
+	if len(model.data) != len(model.GetConnectedVector()) {
+		t.Errorf("GetConnectedVector error")
+	}
+
 	wv0 := model.GetNormalizedVector("NOT_FOUND_WORD")
 	if wv0 != nil {
 		t.Errorf("%q is not nil", wv0)

@@ -46,16 +46,74 @@ func getW2VModel(ifname string) (model *word2vec.Model, err error) {
 	return word2vec.NewModel(w2f)
 }
 
+func outSims(model *word2vec.Model, x string, outf *os.File, top_n int) {
+	connected_vector := model.GetConnectedVector()
+	vocab := model.GetVocab()
+	vectorSize := model.GetVectorSize()
+	vec1, _ := model.GetVector(x)
+	if vec1 == nil {
+		fmt.Fprintf(outf, "%s is out of vocablary\n", x)
+		return
+	}
+
+	best_words := make([]string, top_n)
+	best_vals := make([]float32, top_n)
+
+	for i, _ := range best_vals {
+		best_vals[i] = -1
+	}
+
+	for word, position := range vocab {
+		if word == x {
+			continue
+		}
+		vec2 := connected_vector[position*vectorSize : (position+1)*vectorSize]
+		val := vec1.Dot(vec2)
+		for idx := top_n - 1; idx >= 0; idx-- {
+			myval := best_vals[idx]
+			if val > myval {
+				for idx2 := 0; idx2 < idx; idx2++ {
+					best_vals[idx2] = best_vals[idx2+1]
+					best_words[idx2] = best_words[idx2+1]
+				}
+				best_vals[idx] = val
+				best_words[idx] = word
+				break
+			}
+		}
+	}
+
+	for i := top_n - 1; i >= 0; i-- {
+		word := best_words[i]
+		fmt.Fprintf(outf, "%s %f\n", word, best_vals[i])
+	}
+	fmt.Fprintf(outf, "\n")
+}
+
+func outSim(model *word2vec.Model, x, y string, outf *os.File) {
+	simval, err := model.Similarity(x, y)
+
+	fmt.Fprintf(outf, "%s\t%s", x, y)
+	if err == nil {
+		fmt.Fprintf(outf, "\t%f", simval)
+	} else {
+		fmt.Fprintf(outf, "\t-")
+	}
+	fmt.Fprintf(outf, "\n")
+}
+
 func main() {
 	var (
 		ifname  string
 		ofname  string
 		w2vname string
+		top_n   int
 	)
 
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	f.StringVar(&ifname, "i", "-", "Input file name. - or no designation means STDIN")
 	f.StringVar(&ofname, "o", "-", "Output file name. - or no designation means STDOUT")
+	f.IntVar(&top_n, "n", 10, "Top n to show")
 	f.StringVar(&w2vname, "m", "", "Word2Vec model file")
 
 	f.Parse(os.Args[1:])
@@ -89,21 +147,15 @@ func main() {
 
 		items := strings.Fields(string(line))
 		if len(items) < 2 { // non target line
-			continue
-		}
-
-		x := items[0]
-		y := items[1]
-
-		simval, err := model.Similarity(x, y)
-
-		fmt.Fprintf(outf, "%s\t%s", x, y)
-		if err == nil {
-			fmt.Fprintf(outf, "\t%f", simval)
+			if len(line) != 0 {
+				x := string(line)
+				outSims(model, x, outf, top_n)
+			}
 		} else {
-			fmt.Fprintf(outf, "\t-")
+			x := items[0]
+			y := items[1]
+			outSim(model, x, y, outf)
 		}
-		fmt.Fprintf(outf, "\n")
 	}
 
 }
