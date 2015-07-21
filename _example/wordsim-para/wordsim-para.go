@@ -68,7 +68,10 @@ func main() {
 	optparser := flags.NewParser(&opts, flags.Default)
 	optparser.Name = ""
 	optparser.Usage = "-i wordlist -m modelfile [OPTIONS]"
-	optparser.Parse()
+	_, err := optparser.Parse()
+	if err != nil {
+		os.Exit(1)
+	}
 
 	//show help
 	if len(os.Args) == 1 {
