@@ -17,6 +17,14 @@ type Model struct {
 }
 
 func NewModel(inf *os.File) (model *Model, err error) {
+	fi, err := inf.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if fi.IsDir() {
+		return nil, errors.New("The path points to a directory")
+	}
+
 	model = new(Model)
 	reader := bufio.NewReader(inf)
 	fmt.Fscanln(reader, &model.vocabSize, &model.vectorSize)
