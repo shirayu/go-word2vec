@@ -5,19 +5,40 @@ import (
 	"testing"
 )
 
+func TestModelLoadError(t *testing.T) {
+	tests := []struct {
+		path string
+		kind int
+	}{
+		{
+			"test/broken.model.bin",
+			1,
+		},
+		{
+			"/",
+			1,
+		},
+		{
+			"invalid_path",
+			0,
+		},
+	}
+
+	for _, test := range tests {
+		inf, err := os.Open(test.path)
+		defer inf.Close()
+		if test.kind == 0 && err == nil {
+			t.Errorf("Invalid path should make errors")
+		}
+		_, err = NewModel(inf)
+		if test.kind == 1 && err == nil {
+			t.Errorf("Broken model should make errors")
+		}
+	}
+
+}
+
 func TestModelLoad(t *testing.T) {
-
-	ifname0 := "test/broken.model.bin"
-	inf0, err := os.Open(ifname0)
-	defer inf0.Close()
-	if err != nil {
-		t.Errorf("%q\n", err)
-	}
-	_, err = NewModel(inf0)
-	if err == nil {
-		t.Errorf("Broken model should make errors")
-	}
-
 	ifname := "test/model.bin"
 	inf, err := os.Open(ifname)
 	defer inf.Close()
