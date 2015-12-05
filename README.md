@@ -3,6 +3,9 @@
 
 [![Build Status](https://travis-ci.org/shirayu/go-word2vec.svg?branch=master)](https://travis-ci.org/shirayu/go-word2vec)
 [![Coverage Status](https://coveralls.io/repos/shirayu/go-word2vec/badge.png)](https://coveralls.io/r/shirayu/go-word2vec)
+[![LGPLv3](https://img.shields.io/badge/license-LGPLv3-blue.svg)](LGPLv3)
+[![BSD](https://img.shields.io/badge/license-BSD-blue.svg)](BSD)
+
 
 ## What's this
 
