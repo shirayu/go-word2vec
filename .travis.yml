@@ -8,10 +8,13 @@ before_install:
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
     - go get golang.org/x/tools/cmd/cover
+    - go get golang.org/x/tools/cmd/vet
+
+install:
+    - go get -d -v ./...
+    - go vet ./...
+    - go build -v ./...
 
 script:
     - $HOME/gopath/bin/goveralls -service=travis-ci
 
-install:
-    - go get -d -v ./...
-    - go build -v ./...
