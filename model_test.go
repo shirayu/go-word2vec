@@ -65,7 +65,7 @@ func TestModelLoad(t *testing.T) {
 
 	wv0 := model.GetNormalizedVector("NOT_FOUND_WORD")
 	if wv0 != nil {
-		t.Errorf("%q is not nil", wv0)
+		t.Errorf("%v is not nil", wv0)
 	}
 
 	wv1 := model.GetNormalizedVector("he")

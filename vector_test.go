@@ -16,38 +16,38 @@ func TestVector(t *testing.T) {
 
 	norm1a := vector1.GetNorm()
 	if norm1a != norm1 {
-		t.Errorf("Error of GetNorm()\twant: %q\tbut: %q\n", norm1, norm1a)
+		t.Errorf("Error of GetNorm()\twant: %v\tbut: %v\n", norm1, norm1a)
 	}
 
 	norm1b := vector1.Normalize()
 	if norm1b != norm1 {
-		t.Errorf("Error of Normalize()\twant: %q\tbut: %q\n", norm1, norm1b)
+		t.Errorf("Error of Normalize()\twant: %v\tbut: %v\n", norm1, norm1b)
 	}
 
 	norm1c := vector1.GetNorm()
 	if norm1c != 1 {
-		t.Errorf("Error of GetNorm() after Normalize()\twant: %q\tbut: %q\n", 1, norm1c)
+		t.Errorf("Error of GetNorm() after Normalize()\twant: %v\tbut: %v\n", 1, norm1c)
 	}
 
 	vector2.Scal(2)
 	if !vector2.Equals(vector3) {
-		t.Errorf("Error of Scal()\twant:%q\tbut: %q", vector3, vector2)
+		t.Errorf("Error of Scal()\twant:%v\tbut: %v", vector3, vector2)
 	}
 
 	if vector2.Equals(vector0) {
 		t.Errorf("Equals()\tTwo vector length is different. %d vs %d", len(vector0), len(vector2))
 	}
 	if vector3.Equals(vector4) {
-		t.Errorf("Equals()\tTwo vector  is not equal. %q vs %q", vector3, vector4)
+		t.Errorf("Equals()\tTwo vector  is not equal. %v vs %v", vector3, vector4)
 	}
 
 	vector3.Add(1, vector4)
 	if !vector3.Equals(vector5) {
-		t.Errorf("Error of Add()\twant:%q\tbut: %q", vector5, vector3)
+		t.Errorf("Error of Add()\twant:%v\tbut: %v", vector5, vector3)
 	}
 
 	dot45_sys := vector4.Dot(vector5)
 	if dot45_sys != dot45 {
-		t.Errorf("Error of Add()\twant:%q\tbut: %q", dot45, dot45_sys)
+		t.Errorf("Error of Add()\twant:%v\tbut: %v", dot45, dot45_sys)
 	}
 }
