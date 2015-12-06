@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+//Model is word2vec model
 type Model struct {
 	vocabSize  int
 	vectorSize int
@@ -16,6 +17,7 @@ type Model struct {
 	norms      Vector //connect all vectors
 }
 
+//NewModel returs Model
 func NewModel(inf *os.File) (model *Model, err error) {
 	fi, err := inf.Stat()
 	if err != nil {
@@ -52,58 +54,67 @@ func NewModel(inf *os.File) (model *Model, err error) {
 
 	return model, nil
 }
-func (self *Model) GetVocab() map[string]int {
-	return self.vocab
-}
-func (self *Model) GetVocabSize() int {
-	return self.vocabSize
-}
-func (self *Model) GetConnectedVector() Vector {
-	return self.data
-}
-func (self *Model) GetVectorSize() int {
-	return self.vectorSize
+
+//GetVocab returns the map of vocabulary
+func (model *Model) GetVocab() map[string]int {
+	return model.vocab
 }
 
-//Get normalized vector and its original norm
-func (self *Model) GetVector(word string) (Vector, float32) {
-	position, ok := self.vocab[word]
+//GetVocabSize return the size of vocabulary
+func (model *Model) GetVocabSize() int {
+	return model.vocabSize
+}
+
+//GetConnectedVector return the concatinated vector for all words
+func (model *Model) GetConnectedVector() Vector {
+	return model.data
+}
+
+//GetVectorSize return the number of dimention of each vector
+func (model *Model) GetVectorSize() int {
+	return model.vectorSize
+}
+
+//GetVector returns the normalized vector for the given word and its original norm
+func (model *Model) GetVector(word string) (Vector, float32) {
+	position, ok := model.vocab[word]
 	if ok {
-		norm := self.norms[position]
-		return self.data[position*self.vectorSize : (position+1)*self.vectorSize], norm
+		norm := model.norms[position]
+		return model.data[position*model.vectorSize : (position+1)*model.vectorSize], norm
 	}
 	return nil, 0
 }
 
-//Get normalized vector
-func (self *Model) GetNormalizedVector(word string) Vector {
-	position, ok := self.vocab[word]
+//GetNormalizedVector returns the normalized vector for the given word
+func (model *Model) GetNormalizedVector(word string) Vector {
+	position, ok := model.vocab[word]
 	if ok {
-		return self.data[position*self.vectorSize : (position+1)*self.vectorSize]
+		return model.data[position*model.vectorSize : (position+1)*model.vectorSize]
 	}
 	return nil
 }
 
-func (self *Model) GetNorms() Vector {
-	return self.norms
+//GetNorms returns the concatinated norms for all vector
+func (model *Model) GetNorms() Vector {
+	return model.norms
 }
 
-//Get original norm
-func (self *Model) GetNorm(word string) float32 {
-	position, ok := self.vocab[word]
+//GetNorm returns the original norm for the given word
+func (model *Model) GetNorm(word string) float32 {
+	position, ok := model.vocab[word]
 	if ok {
-		return self.norms[position]
+		return model.norms[position]
 	}
 	return 0
 }
 
-//Get similarity of two given words
-func (self *Model) Similarity(word1, word2 string) (float32, error) {
-	vector1 := self.GetNormalizedVector(word1)
+//Similarity returns the similarity between two given words
+func (model *Model) Similarity(word1, word2 string) (float32, error) {
+	vector1 := model.GetNormalizedVector(word1)
 	if vector1 == nil {
 		return 0, errors.New(word1 + " not found")
 	}
-	vector2 := self.GetNormalizedVector(word2)
+	vector2 := model.GetNormalizedVector(word2)
 	if vector2 == nil {
 		return 0, errors.New(word2 + " not found")
 	}

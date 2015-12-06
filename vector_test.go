@@ -46,8 +46,8 @@ func TestVector(t *testing.T) {
 		t.Errorf("Error of Add()\twant:%v\tbut: %v", vector5, vector3)
 	}
 
-	dot45_sys := vector4.Dot(vector5)
-	if dot45_sys != dot45 {
-		t.Errorf("Error of Add()\twant:%v\tbut: %v", dot45, dot45_sys)
+	dot45Sys := vector4.Dot(vector5)
+	if dot45Sys != dot45 {
+		t.Errorf("Error of Add()\twant:%v\tbut: %v", dot45, dot45Sys)
 	}
 }

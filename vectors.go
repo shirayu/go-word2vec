@@ -1,17 +1,19 @@
 package word2vec
 
+//Vectors is a slice of vectors
 type Vectors []Vector
 
-func (self Vectors) HighestDot(vector Vector) (int, float32) {
-	closet_idx := 0
-	closet_idx_val := float32(-100.0)
-	for idx, vec := range self {
+//HighestDot return the highest dot value and the vector for the given vector
+func (vecs Vectors) HighestDot(vector Vector) (int, float32) {
+	closetIdx := 0
+	closetIdxVal := float32(-100.0)
+	for idx, vec := range vecs {
 		val := vec.Dot(vector)
 		//update
-		if val > closet_idx_val {
-			closet_idx = idx
-			closet_idx_val = val
+		if val > closetIdxVal {
+			closetIdx = idx
+			closetIdxVal = val
 		}
 	}
-	return closet_idx, closet_idx_val
+	return closetIdx, closetIdxVal
 }
