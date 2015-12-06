@@ -9,13 +9,13 @@ type Vector []float32
 
 // GetNorm returns the norm of the vector
 func (y Vector) GetNorm() float32 {
-	return blas.Snrm2(len(v), v, 1)
+	return blas.Snrm2(len(y), y, 1)
 }
 
 // Normalize vector and return the original norm
 func (y Vector) Normalize() float32 {
-	w := v.GetNorm()
-	blas.Sscal(len(v), 1/w, v, 1)
+	w := y.GetNorm()
+	blas.Sscal(len(y), 1/w, y, 1)
 	return w
 }
 
