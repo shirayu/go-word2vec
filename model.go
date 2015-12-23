@@ -17,7 +17,7 @@ type Model struct {
 	norms      Vector //connect all vectors
 }
 
-//NewModel returs Model
+//NewModel returns Model
 func NewModel(inf *os.File) (model *Model, err error) {
 	fi, err := inf.Stat()
 	if err != nil {
@@ -65,12 +65,12 @@ func (model *Model) GetVocabSize() int {
 	return model.vocabSize
 }
 
-//GetConnectedVector return the concatinated vector for all words
+//GetConnectedVector return the concatenated vector for all words
 func (model *Model) GetConnectedVector() Vector {
 	return model.data
 }
 
-//GetVectorSize return the number of dimention of each vector
+//GetVectorSize return the number of dimension of each vector
 func (model *Model) GetVectorSize() int {
 	return model.vectorSize
 }
@@ -94,7 +94,7 @@ func (model *Model) GetNormalizedVector(word string) Vector {
 	return nil
 }
 
-//GetNorms returns the concatinated norms for all vector
+//GetNorms returns the concatenated norms for all vector
 func (model *Model) GetNorms() Vector {
 	return model.norms
 }
