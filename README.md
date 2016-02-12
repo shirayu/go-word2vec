@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.org/shirayu/go-word2vec.svg?branch=master)](https://travis-ci.org/shirayu/go-word2vec)
 [![codecov.io](https://codecov.io/github/shirayu/go-word2vec/coverage.svg?branch=master)](https://codecov.io/github/shirayu/go-word2vec?branch=master)
+[![Report card](http://goreportcard.com/badge/shirayu/go-word2vec)](http://goreportcard.com/report/shirayu/go-word2vec)
 [![GoDoc](https://godoc.org/github.com/shirayu/go-word2vec?status.svg)](https://godoc.org/github.com/shirayu/go-word2vec)
 [![LGPLv3](https://img.shields.io/badge/license-LGPLv3-blue.svg)](LGPLv3)
 [![BSD](https://img.shields.io/badge/license-BSD-blue.svg)](BSD)
