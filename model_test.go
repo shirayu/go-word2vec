@@ -38,7 +38,7 @@ func TestModelLoadError(t *testing.T) {
 
 }
 
-func TestModelLoad(t *testing.T) {
+func TestModelLoadOpen(t *testing.T) {
 	ifname := "test/model.bin"
 	inf, err := os.Open(ifname)
 	defer inf.Close()
@@ -62,6 +62,22 @@ func TestModelLoad(t *testing.T) {
 	if len(model.data) != len(model.GetConnectedVector()) {
 		t.Errorf("GetConnectedVector error")
 	}
+}
+
+func TestModelLoadSim(t *testing.T) {
+	ifname := "test/model.bin"
+	inf, err := os.Open(ifname)
+	defer inf.Close()
+	if err != nil {
+		t.Errorf("%q\n", err)
+	}
+
+	model, err := NewModel(inf)
+	if model == nil {
+		t.Errorf("Model was not loaded\t%q\n", err)
+		return
+	}
+	t.Logf("Model\tvocab=%d\tvector=%d\n", model.GetVocabSize(), model.GetVectorSize())
 
 	wv0 := model.GetNormalizedVector("NOT_FOUND_WORD")
 	if wv0 != nil {
@@ -90,6 +106,26 @@ func TestModelLoad(t *testing.T) {
 	if sim3 != 0 || err == nil {
 		t.Errorf("Error: Similarity() for not found word")
 	}
+}
+
+func TestModelLoadVec(t *testing.T) {
+	ifname := "test/model.bin"
+	inf, err := os.Open(ifname)
+	defer inf.Close()
+	if err != nil {
+		t.Errorf("%q\n", err)
+	}
+
+	model, err := NewModel(inf)
+	if model == nil {
+		t.Errorf("Model was not loaded\t%q\n", err)
+		return
+	}
+	t.Logf("Model\tvocab=%d\tvector=%d\n", model.GetVocabSize(), model.GetVectorSize())
+
+	wv1 := model.GetNormalizedVector("he")
+	wv2 := model.GetNormalizedVector("she")
+	wv3 := model.GetNormalizedVector("with")
 
 	if n1 := wv1.GetNorm(); n1 != 1 {
 		t.Errorf("Error:\tNorm1 is not 1\t%f\n", n1)
@@ -117,10 +153,10 @@ func TestModelLoad(t *testing.T) {
 	}
 	wv, norm := model.GetVector("NOT_FOUND_WORD")
 	if wv != nil {
-		t.Errorf("Error:\tVector shoud be nil for non-existing word")
+		t.Errorf("Error:\tVector should be nil for non-existing word")
 	}
 	if norm != 0 {
-		t.Errorf("Error:\tThe norm shoud be 0 for non-existing word")
+		t.Errorf("Error:\tThe norm should be 0 for non-existing word")
 	}
 
 }

@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/jessevdk/go-flags"
-	"github.com/shirayu/go-word2vec"
 	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
+
+	"github.com/jessevdk/go-flags"
+	"github.com/shirayu/go-word2vec"
 )
 
 func getW2VModel(ifname string) (model *word2vec.Model, err error) {

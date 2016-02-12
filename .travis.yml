@@ -5,19 +5,22 @@ go:
     - tip
 
 before_install:
-    - go get github.com/axw/gocov/gocov
-    - go get github.com/mattn/goveralls
     - go get golang.org/x/tools/cmd/cover
     - go get golang.org/x/tools/cmd/vet
     - go get github.com/golang/lint/golint
+    - pip install --user codecov
+    - go get github.com/fzipp/gocyclo
     - go get github.com/torbit/cdb
 
 install:
-    - go get -d -v ./...
+    - go get -v ./...
     - go vet ./...
     - test -z "$($HOME/gopath/bin/golint ./... | tee /dev/stderr)"
+    - gocyclo -over 15 .
     - go build -v ./...
 
 script:
-    - $HOME/gopath/bin/goveralls -service=travis-ci
+    - go test -coverprofile=coverage.txt -covermode=atomic
 
+after_success:
+    - codecov
