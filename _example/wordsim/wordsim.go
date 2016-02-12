@@ -5,10 +5,11 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/shirayu/go-word2vec"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/shirayu/go-word2vec"
 )
 
 func getFile(ifname string, ofname string) (inf, outf *os.File, err error) {
@@ -46,37 +47,37 @@ func getW2VModel(ifname string) (model *word2vec.Model, err error) {
 	return word2vec.NewModel(w2f)
 }
 
-func outSims(model *word2vec.Model, vec1 word2vec.Vector, outf *os.File, top_n int) {
-	best_words := make([]string, top_n)
-	best_vals := make([]float32, top_n)
+func outSims(model *word2vec.Model, vec1 word2vec.Vector, outf *os.File, topN int) {
+	bestWords := make([]string, topN)
+	bestVals := make([]float32, topN)
 	vocab := model.GetVocab()
-	connected_vector := model.GetConnectedVector()
+	connectedVector := model.GetConnectedVector()
 	vectorSize := model.GetVectorSize()
 
-	for i, _ := range best_vals {
-		best_vals[i] = -1
+	for i := range bestVals {
+		bestVals[i] = -1
 	}
 
 	for word, position := range vocab {
-		vec2 := connected_vector[position*vectorSize : (position+1)*vectorSize]
+		vec2 := connectedVector[position*vectorSize : (position+1)*vectorSize]
 		val := vec1.Dot(vec2)
-		for idx := top_n - 1; idx >= 0; idx-- {
-			myval := best_vals[idx]
+		for idx := topN - 1; idx >= 0; idx-- {
+			myval := bestVals[idx]
 			if val > myval {
 				for idx2 := 0; idx2 < idx; idx2++ {
-					best_vals[idx2] = best_vals[idx2+1]
-					best_words[idx2] = best_words[idx2+1]
+					bestVals[idx2] = bestVals[idx2+1]
+					bestWords[idx2] = bestWords[idx2+1]
 				}
-				best_vals[idx] = val
-				best_words[idx] = word
+				bestVals[idx] = val
+				bestWords[idx] = word
 				break
 			}
 		}
 	}
 
-	for i := top_n - 1; i >= 0; i-- {
-		word := best_words[i]
-		fmt.Fprintf(outf, "%s %f\n", word, best_vals[i])
+	for i := topN - 1; i >= 0; i-- {
+		word := bestWords[i]
+		fmt.Fprintf(outf, "%s %f\n", word, bestVals[i])
 	}
 	fmt.Fprintf(outf, "\n")
 }
@@ -102,13 +103,13 @@ func main() {
 		ifname  string
 		ofname  string
 		w2vname string
-		top_n   int
+		topN    int
 	)
 
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	f.StringVar(&ifname, "i", "-", "Input file name. - or no designation means STDIN")
 	f.StringVar(&ofname, "o", "-", "Output file name. - or no designation means STDOUT")
-	f.IntVar(&top_n, "n", 10, "Top n to show")
+	f.IntVar(&topN, "n", 10, "Top n to show")
 	f.StringVar(&w2vname, "m", "", "Word2Vec model file")
 
 	f.Parse(os.Args[1:])
@@ -146,7 +147,7 @@ func main() {
 				x := string(line)
 				vec1, err := getConnectedVector(model, x)
 				if err == nil {
-					outSims(model, vec1, outf, top_n)
+					outSims(model, vec1, outf, topN)
 				} else {
 					fmt.Fprintf(os.Stderr, "%q\n", err)
 				}

@@ -5,10 +5,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/jessevdk/go-flags"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/jessevdk/go-flags"
 )
 
 func getWordList(ifname string) (map[string]struct{}, error) {
@@ -60,7 +61,7 @@ func main() {
 	}
 
 	log.Printf("Getting wordlist: %s", opts.Input)
-	new_words, err := getWordList(opts.Input)
+	newWords, err := getWordList(opts.Input)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%q\n", err)
 		os.Exit(1)
@@ -80,7 +81,7 @@ func main() {
 	var vectorSize int
 	fmt.Fscanln(reader, &vocabSize, &vectorSize)
 
-	log.Printf("new_words: %d", len(new_words))
+	log.Printf("newWords: %d", len(newWords))
 
 	var myword string
 	tmp := make([]float32, vectorSize)
@@ -99,7 +100,7 @@ func main() {
 		myword = string(bytes[1 : len(bytes)-1])
 
 		binary.Read(reader, binary.LittleEndian, tmp)
-		if _, ok := new_words[myword]; ok {
+		if _, ok := newWords[myword]; ok {
 			count++
 			tmpout.WriteString(myword)
 			tmpout.WriteString(" ")
