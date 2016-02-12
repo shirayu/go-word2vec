@@ -117,10 +117,10 @@ func TestModelLoad(t *testing.T) {
 	}
 	wv, norm := model.GetVector("NOT_FOUND_WORD")
 	if wv != nil {
-		t.Errorf("Error:\tVector shoud be nil for non-existing word")
+		t.Errorf("Error:\tVector should be nil for non-existing word")
 	}
 	if norm != 0 {
-		t.Errorf("Error:\tThe norm shoud be 0 for non-existing word")
+		t.Errorf("Error:\tThe norm should be 0 for non-existing word")
 	}
 
 }
