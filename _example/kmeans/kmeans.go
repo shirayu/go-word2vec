@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/jessevdk/go-flags"
-	"github.com/shirayu/go-word2vec"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
 	"time"
+
+	"github.com/jessevdk/go-flags"
+	"github.com/shirayu/go-word2vec"
 )
 
 func getW2VModel(ifname string) (model *word2vec.Model, err error) {
@@ -34,22 +35,13 @@ type cmdOptions struct {
 	Log    bool   `long:"log" description:"Enable logging" default:"false"`
 }
 
-func operation(opts *cmdOptions) {
-
-	log.Printf("Open the model: %s", opts.Model)
-	model, err := getW2VModel(opts.Model)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%q\n", err)
-		os.Exit(1)
-	}
-
-	var targets map[string]struct{} = nil
-	if len(opts.Target) != 0 {
+func getTargets(filename string) (map[string]struct{}, error) {
+	var targets map[string]struct{}
+	if len(filename) != 0 {
 		targets = map[string]struct{}{}
-		f, err := os.Open(opts.Target)
+		f, err := os.Open(filename)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%q\n", err)
-			os.Exit(1)
+			return nil, err
 		}
 		scanner := bufio.NewScanner(f)
 		for scanner.Scan() {
@@ -57,39 +49,62 @@ func operation(opts *cmdOptions) {
 			targets[token] = struct{}{}
 		}
 		if err := scanner.Err(); err != nil {
-			fmt.Fprintf(os.Stderr, "%q\n", err)
-			os.Exit(1)
+			return nil, err
 		}
 	}
+	return targets, nil
+}
 
-	vec_size := model.GetVectorSize()
-	voc_size := model.GetVocabSize()
-	id2word := make([]string, voc_size)
-	target_word_num := 0
+func getID2word(model *word2vec.Model, targets map[string]struct{}) []string {
+	if model == nil {
+		return nil
+	}
+	vocSize := model.GetVocabSize()
+	id2word := make([]string, vocSize)
+	targetWordNum := 0
 	for word, i := range model.GetVocab() {
 		if targets == nil {
 			id2word[i] = word
-			target_word_num += 1
+			targetWordNum++
 			continue
 		} else {
 			_, ok := targets[word]
 			if ok {
 				id2word[i] = word
-				target_word_num += 1
+				targetWordNum++
 				continue
 			}
 		}
 		id2word[i] = ""
 	}
+	log.Printf("Target words: %d\n", targetWordNum)
+	return id2word
+}
 
-	log.Printf("Vocabsize: %d\n", voc_size)
-	log.Printf("Target words: %d\n", target_word_num)
-	log.Printf("Vectorsize: %d\n", vec_size)
+func operation(opts *cmdOptions) error {
 
-	connected_vector := model.GetConnectedVector()
-	connected_norm := model.GetNorms()
+	log.Printf("Open the model: %s", opts.Model)
+	model, err := getW2VModel(opts.Model)
+	if err != nil {
+		return err
+	}
 
-	centroids := make(word2vec.Vector, vec_size*opts.K)
+	targets, err := getTargets(opts.Target)
+	if err != nil {
+		return err
+	}
+
+	vecSize := model.GetVectorSize()
+	vocSize := model.GetVocabSize()
+
+	log.Printf("Vocabsize: %d\n", vocSize)
+	log.Printf("Vectorsize: %d\n", vecSize)
+	id2word := getID2word(model, targets)
+
+	connectedVector := model.GetConnectedVector()
+	connectedNorm := model.GetNorms()
+
+	centroids := make(word2vec.Vector, vecSize*opts.K)
 
 	iteration := opts.Loop
 	for loop := 0; loop < iteration+2; loop++ {
@@ -100,25 +115,25 @@ func operation(opts *cmdOptions) {
 			log.Printf(" Get results")
 		}
 
-		new_centroids := make(word2vec.Vector, vec_size*opts.K)
-		new_nums := make([]int, opts.K)
+		newCentroids := make(word2vec.Vector, vecSize*opts.K)
+		newNums := make([]int, opts.K)
 		for idx, word := range id2word {
 			if len(word) == 0 {
 				continue
 			}
-			myvec := connected_vector[idx*vec_size : (idx+1)*vec_size]
-			mynorm := connected_norm[idx]
+			myvec := connectedVector[idx*vecSize : (idx+1)*vecSize]
+			mynorm := connectedNorm[idx]
 			myClass := 0
 
 			if loop == 0 { //init
 				myClass = rand.Intn(opts.K)
 			} else {
-				myClass_val := float32(0)
+				myClassVal := float32(0)
 				for n := 0; n < opts.K; n++ {
-					cent_vec := centroids[n*vec_size : (n+1)*vec_size]
-					val := cent_vec.Dot(myvec) * mynorm
-					if val > myClass_val {
-						myClass_val = val
+					centVec := centroids[n*vecSize : (n+1)*vecSize]
+					val := centVec.Dot(myvec) * mynorm
+					if val > myClassVal {
+						myClassVal = val
 						myClass = n
 					}
 				}
@@ -127,24 +142,24 @@ func operation(opts *cmdOptions) {
 			if loop == iteration+1 {
 				fmt.Printf("%d\t%s\n", myClass, word)
 			} else {
-				cent_vec := new_centroids[myClass*vec_size : (myClass+1)*vec_size]
-				cent_vec.Add(mynorm, myvec)
-				new_nums[myClass] += 1
+				centVec := newCentroids[myClass*vecSize : (myClass+1)*vecSize]
+				centVec.Add(mynorm, myvec)
+				newNums[myClass]++
 			}
 		}
 
 		//average
 		if loop != iteration+1 {
 			for n := 0; n < opts.K; n++ {
-				new_cent_vec := new_centroids[n*vec_size : (n+1)*vec_size]
-				if new_nums[n] != 0 {
-					new_cent_vec.Scal(float32(1) / float32(new_nums[n]))
+				newCentVec := newCentroids[n*vecSize : (n+1)*vecSize]
+				if newNums[n] != 0 {
+					newCentVec.Scal(float32(1) / float32(newNums[n]))
 				}
 			}
-			centroids = new_centroids
+			centroids = newCentroids
 		}
 	}
-
+	return nil
 }
 
 func main() {
@@ -172,7 +187,12 @@ func main() {
 		log.SetOutput(ioutil.Discard)
 	}
 
-	operation(&opts)
+	err = operation(&opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%q\n", err)
+		os.Exit(1)
+	}
+
 }
 
 func init() {
