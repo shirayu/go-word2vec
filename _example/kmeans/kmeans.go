@@ -32,7 +32,7 @@ type cmdOptions struct {
 	Target string `long:"target" description:"Enable word limitation"`
 	K      int    `short:"k" long:"class" description:"The number of clusters" default:"10"`
 	Loop   int    `short:"l" long:"loop" description:"The number of iterations" default:"10"`
-	Log    bool   `long:"log" description:"Enable logging" default:"false"`
+	Log    bool   `long:"log" description:"Enable logging"`
 }
 
 func getTargets(filename string) (map[string]struct{}, error) {

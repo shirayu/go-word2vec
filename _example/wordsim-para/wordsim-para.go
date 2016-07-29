@@ -45,7 +45,7 @@ type cmdOptions struct {
 	Input     string  `short:"i" long:"input" description:"The path to the word list"`
 	Model     string  `short:"m" long:"model"  description:"The path to the word2vec model file"`
 	Threthold float32 `short:"t" long:"threthold" description:"The threthold of similarity to output" default:"0.4"`
-	Log       bool    `long:"log" description:"Enable logging" default:"false"`
+	Log       bool    `long:"log" description:"Enable logging"`
 	Parallel  int     `short:"p" long:"parallel" description:"Parallel number to run" default:"1"`
 }
 

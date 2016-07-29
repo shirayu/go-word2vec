@@ -32,7 +32,7 @@ type cmdOptions struct {
 	Input  string `short:"i" long:"input"`
 	Model  string `short:"m" long:"model"`
 	Output string `short:"o" long:"output"`
-	Log    bool   `long:"log" description:"Enable logging" default:"false"`
+	Log    bool   `long:"log" description:"Enable logging"`
 }
 
 func main() {
