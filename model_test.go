@@ -123,6 +123,13 @@ func TestModelLoadVec(t *testing.T) {
 	}
 	t.Logf("Model\tvocab=%d\tvector=%d\n", model.GetVocabSize(), model.GetVectorSize())
 
+	if wv := model.GetNormalizedVector("</s>"); wv == nil {
+		t.Errorf("Error:\tNot found the first word\n")
+	}
+	if wv := model.GetNormalizedVector(`'Just`); wv == nil {
+		t.Errorf("Error:\tNot found the last word\n")
+	}
+
 	wv1 := model.GetNormalizedVector("he")
 	wv2 := model.GetNormalizedVector("she")
 	wv3 := model.GetNormalizedVector("with")

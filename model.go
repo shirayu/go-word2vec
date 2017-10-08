@@ -42,7 +42,12 @@ func NewModel(inf *os.File) (model *Model, err error) {
 		if err != nil {
 			return model, err
 		}
-		myword = string(bytes[1 : len(bytes)-1])
+
+		if i == 0 {
+			myword = string(bytes[0 : len(bytes)-1])
+		} else {
+			myword = string(bytes[1 : len(bytes)-1]) //eliminate line break
+		}
 
 		model.vocab[myword] = i
 		binary.Read(reader, binary.LittleEndian, tmp)
