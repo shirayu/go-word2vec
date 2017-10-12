@@ -1,6 +1,7 @@
 package word2vec
 
 import (
+	"math"
 	"os"
 	"testing"
 )
@@ -115,7 +116,20 @@ func TestModelLoadVec(t *testing.T) {
 	if err != nil {
 		t.Errorf("%q\n", err)
 	}
+	w2vtest(t, inf)
+}
 
+func TestModelWithoutNewline(t *testing.T) {
+	ifname := "test/model_nonewline.bin"
+	inf, err := os.Open(ifname)
+	defer inf.Close()
+	if err != nil {
+		t.Errorf("%q\n", err)
+	}
+	w2vtest(t, inf)
+}
+
+func w2vtest(t *testing.T, inf *os.File) {
 	model, err := NewModel(inf)
 	if model == nil {
 		t.Errorf("Model was not loaded\t%q\n", err)
@@ -134,14 +148,14 @@ func TestModelLoadVec(t *testing.T) {
 	wv2 := model.GetNormalizedVector("she")
 	wv3 := model.GetNormalizedVector("with")
 
-	if n1 := wv1.GetNorm(); n1 != 1 {
-		t.Errorf("Error:\tNorm1 is not 1\t%f\n", n1)
+	if n1 := wv1.GetNorm(); round(n1, 5) != 1 {
+		t.Errorf("Error:\tNorm1 is not 1\t%d\n", n1)
 	}
-	if n2 := wv2.GetNorm(); n2 != 1 {
-		t.Errorf("Error:\tNorm2 is not 1\t%f\n", n2)
+	if n2 := wv2.GetNorm(); round(n2, 5) != 1 {
+		t.Errorf("Error:\tNorm2 is not 1\t%d\n", n2)
 	}
-	if n3 := wv3.GetNorm(); n3 != 1 {
-		t.Errorf("Error:\tNorm3 is not 1\t%f\n", n3)
+	if n3 := wv3.GetNorm(); round(n3, 5) != 1 {
+		t.Errorf("Error:\tNorm3 is not 1\t%d\n", n3)
 	}
 
 	if n := model.GetNorm("she"); n < 0 {
@@ -155,7 +169,7 @@ func TestModelLoadVec(t *testing.T) {
 	if wv4 == nil {
 		t.Errorf("Error:\tnil Vector of GetVector(\"it\")")
 	}
-	if norm4 != 0.5698909 {
+	if round(norm4, 6) != 0.569891 {
 		t.Errorf("Error:\tInorrect norm of GetVector(\"it\")")
 	}
 	wv, norm := model.GetVector("NOT_FOUND_WORD")
@@ -166,4 +180,9 @@ func TestModelLoadVec(t *testing.T) {
 		t.Errorf("Error:\tThe norm should be 0 for non-existing word")
 	}
 
+}
+
+func round(f float32, places int) float64 {
+	shift := math.Pow(10, float64(places))
+	return math.Floor(float64(f)*shift+.5) / shift
 }
