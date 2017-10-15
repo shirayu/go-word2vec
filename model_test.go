@@ -149,13 +149,13 @@ func w2vtest(t *testing.T, inf *os.File) {
 	wv3 := model.GetNormalizedVector("with")
 
 	if n1 := wv1.GetNorm(); round(n1, 5) != 1 {
-		t.Errorf("Error:\tNorm1 is not 1\t%d\n", n1)
+		t.Errorf("Error:\tNorm1 is not 1\t%f\n", n1)
 	}
 	if n2 := wv2.GetNorm(); round(n2, 5) != 1 {
-		t.Errorf("Error:\tNorm2 is not 1\t%d\n", n2)
+		t.Errorf("Error:\tNorm2 is not 1\t%f\n", n2)
 	}
 	if n3 := wv3.GetNorm(); round(n3, 5) != 1 {
-		t.Errorf("Error:\tNorm3 is not 1\t%d\n", n3)
+		t.Errorf("Error:\tNorm3 is not 1\t%f\n", n3)
 	}
 
 	if n := model.GetNorm("she"); n < 0 {
