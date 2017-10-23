@@ -6,6 +6,7 @@
 [![Report card](http://goreportcard.com/badge/shirayu/go-word2vec)](http://goreportcard.com/report/shirayu/go-word2vec)
 [![GoDoc](https://godoc.org/github.com/shirayu/go-word2vec?status.svg)](https://godoc.org/github.com/shirayu/go-word2vec)
 [![LGPLv3](https://img.shields.io/badge/license-LGPLv3-blue.svg)](LGPLv3)
+[![Apache License](http://img.shields.io/badge/license-APACHE2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![BSD](https://img.shields.io/badge/license-BSD-blue.svg)](BSD)
 
 
@@ -37,5 +38,6 @@ supported by [CREST, JST](http://www.jst.go.jp/kisoken/crest/en/).
 - (c) Yuta Hayashibe 2014
 - Released under any of the following licences
     - Lesser GNU General Public License 3.0 (see the file LGPL)
+    - Apache License 2.0 (see the file APACHE2)
     - New BSD License (3-clause BSD License) (see the file BSD)
 
