@@ -1,7 +1,7 @@
 
 # go-word2vec
 
-[![Build Status](https://travis-ci.org/shirayu/go-word2vec.svg?branch=master)](https://travis-ci.org/shirayu/go-word2vec)
+[![CircleCI](https://circleci.com/gh/shirayu/go-word2vec.svg?style=svg)](https://circleci.com/gh/shirayu/go-word2vec)
 [![codecov.io](https://codecov.io/github/shirayu/go-word2vec/coverage.svg?branch=master)](https://codecov.io/github/shirayu/go-word2vec?branch=master)
 [![Report card](http://goreportcard.com/badge/shirayu/go-word2vec)](http://goreportcard.com/report/shirayu/go-word2vec)
 [![GoDoc](https://godoc.org/github.com/shirayu/go-word2vec?status.svg)](https://godoc.org/github.com/shirayu/go-word2vec)

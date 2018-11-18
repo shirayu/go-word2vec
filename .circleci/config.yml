@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    environment:
+      - GOPATH: /home/circleci/go
+    docker:
+      - image: circleci/golang:1.11.2
+    working_directory: /home/circleci/go/src/github.com/shirayu/go-word2vec
+    steps:
+        - checkout
+
+        - run:
+              name: Preparation
+              command: |
+                  echo 'export PATH=${GOPATH}/bin/:${PATH}' >> $BASH_ENV
+                  go get -v -t -d ./...
+                  go get golang.org/x/tools/cmd/cover
+                  go get github.com/golang/lint/golint
+                  go get github.com/fzipp/gocyclo
+                  curl -s https://codecov.io/bash -o codecov.sh
+                  go get -v github.com/mitchellh/gox #For release build
+                  go get -v github.com/tcnksm/ghr #For GitHub release
+
+        - run:
+              name: Lint
+              command: |
+                  go vet ./...
+                  test -z "$(golint ./... | tee /dev/stderr)"
+                  gocyclo -over 15 .
+                  go build -v ./...
+                  go test -coverprofile=coverage.txt -covermode=atomic
+                  bash codecov.sh
+
