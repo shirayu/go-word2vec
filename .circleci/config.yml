@@ -4,7 +4,7 @@ jobs:
     environment:
       - GOPATH: /home/circleci/go
     docker:
-      - image: circleci/golang:1.11.2
+      - image: circleci/golang:1.15.6
     working_directory: /home/circleci/go/src/github.com/shirayu/go-word2vec
     steps:
         - checkout
@@ -15,8 +15,8 @@ jobs:
                   echo 'export PATH=${GOPATH}/bin/:${PATH}' >> $BASH_ENV
                   go get -v -t -d ./...
                   go get golang.org/x/tools/cmd/cover
-                  go get github.com/golang/lint/golint
-                  go get github.com/fzipp/gocyclo
+                  go get golang.org/x/lint/golint
+                  go get github.com/fzipp/gocyclo/cmd/gocyclo
                   curl -s https://codecov.io/bash -o codecov.sh
                   go get -v github.com/mitchellh/gox #For release build
                   go get -v github.com/tcnksm/ghr #For GitHub release
