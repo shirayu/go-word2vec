@@ -16,7 +16,7 @@ jobs:
                   go get -v -t -d ./...
                   go get golang.org/x/tools/cmd/cover
                   go get golang.org/x/lint/golint
-                  go get github.com/fzipp/gocyclo
+                  go get github.com/fzipp/gocyclo/cmd/gocyclo
                   curl -s https://codecov.io/bash -o codecov.sh
                   go get -v github.com/mitchellh/gox #For release build
                   go get -v github.com/tcnksm/ghr #For GitHub release
